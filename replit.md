@@ -40,6 +40,7 @@ O protótipo permite explorar disputas, lances, cronômetro, histórico, saldo d
 - Tratar o protótipo anexado como fonte da verdade visual e de comportamento. Manter sua hierarquia, proporções, cores, espaçamentos e composição; não inventar uma nova direção visual sem pedido explícito.
 - Manter o layout original no celular; em telas desktop, pode adaptar para duas colunas, preservando os tokens e a linguagem visual do protótipo.
 - Manter o cabeçalho fixo no topo durante a rolagem.
+- Em celulares, apresentar conteúdo modal contextual como bottom sheet; no desktop, usar modal central.
 
 ## Gotchas
 
