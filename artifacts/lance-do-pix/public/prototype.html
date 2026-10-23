@@ -141,6 +141,12 @@ h1{font-size:24px;letter-spacing:-.02em;margin:26px 0 4px}
 @keyframes fin{from{opacity:0}}
 .fade{animation:fin .5s ease}
 @media (prefers-reduced-motion:reduce){.nxt[data-urgent] .ring,.fade{animation:none}}
+@media (min-width:900px){
+  .app{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,380px);column-gap:64px;align-content:start;max-width:1120px;padding:0 32px 48px}
+  header,.dbg,.nxt{grid-column:1/-1}
+  .desktop-main{grid-column:1;grid-row:4;min-width:0;padding-top:30px}
+  .sheet{position:sticky;grid-column:2;grid-row:4;align-self:start;top:24px;bottom:auto;left:auto;transform:none;width:auto;max-width:none;margin-top:80px;padding:24px;border:1px solid var(--line);border-radius:26px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+}
 </style>
 </head>
 <body>
@@ -156,6 +162,7 @@ h1{font-size:24px;letter-spacing:-.02em;margin:26px 0 4px}
   <div class="dbg" id="ctrl"></div>
   <div class="nxt" id="nxt" hidden><div class="ring"><svg viewBox="0 0 40 40" aria-hidden="true"><circle class="rb" cx="20" cy="20" r="17" pathLength="100"/><circle class="rf" cx="20" cy="20" r="17" pathLength="100"/></svg><b id="nxs"></b></div><div><div class="nx-a">Próxima disputa</div><div class="nx-b">Prêmio revelado ao começar</div></div></div>
 
+  <div class="desktop-main">
   <h1 id="h1">Prêmio em disputa</h1>
   <p class="sub">Dê um lance, fique no topo por 1 minuto e o prêmio é seu!</p>
   <div class="prize"><small>R$</small><b id="pz"></b></div>
@@ -170,17 +177,18 @@ h1{font-size:24px;letter-spacing:-.02em;margin:26px 0 4px}
   <div class="sec" id="rec"><h2>RECENTES</h2></div>
   <div class="tl" id="hist"></div>
   <span class="sr" id="live" aria-live="polite"></span>
-</div>
-
-<div class="sheet">
-  <div class="sh"><h3>SEU PRÓXIMO LANCE</h3><button class="how"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg>Como funciona</button></div>
-  <div class="step">
-    <button class="sq" id="minus" aria-label="Diminuir lance">-</button>
-    <div class="field"><span>R$</span><output id="val">140,00</output></div>
-    <button class="sq" id="plusb" aria-label="Aumentar lance">+</button>
   </div>
-  <div class="chips"><button data-add="50">+50</button><button data-add="100">+100</button><button data-add="200">+200</button></div>
-  <button class="cta" id="cta" type="button" disabled>Disputa encerrada</button>
+
+  <div class="sheet">
+    <div class="sh"><h3>SEU PRÓXIMO LANCE</h3><button class="how"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg>Como funciona</button></div>
+    <div class="step">
+      <button class="sq" id="minus" aria-label="Diminuir lance">-</button>
+      <div class="field"><span>R$</span><output id="val">140,00</output></div>
+      <button class="sq" id="plusb" aria-label="Aumentar lance">+</button>
+    </div>
+    <div class="chips"><button data-add="50">+50</button><button data-add="100">+100</button><button data-add="200">+200</button></div>
+    <button class="cta" id="cta" type="button" disabled>Disputa encerrada</button>
+  </div>
 </div>
 
 <script>
