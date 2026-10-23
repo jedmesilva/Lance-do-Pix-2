@@ -41,6 +41,7 @@ O protótipo permite explorar disputas, lances, cronômetro, histórico, saldo d
 - Manter o layout original no celular; em telas desktop, pode adaptar para duas colunas, preservando os tokens e a linguagem visual do protótipo.
 - Manter o cabeçalho fixo no topo durante a rolagem.
 - Em celulares, apresentar conteúdo modal contextual como bottom sheet; no desktop, usar modal central.
+- No backdrop dos modais, usar apenas escurecimento, sem blur, em celular e desktop.
 
 ## Gotchas
 
