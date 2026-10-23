@@ -1,6 +1,6 @@
-# [Project name]
+# Lance do Pix
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Uma experiência mobile-first de disputa por lances, baseada no protótipo fornecido.
 
 ## Run & Operate
 
@@ -22,23 +22,27 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/lance-do-pix/public/prototype.html` — protótipo original, referência de interface e demonstração interativa
+- `artifacts/lance-do-pix/src/App.tsx` — moldura da aplicação
+- `artifacts/lance-do-pix/src/index.css` — estilos da moldura
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- A demonstração visual usa o HTML original diretamente para não divergir da composição e dos comportamentos de referência.
+- O saldo e os lances são demonstrativos; não há processamento de pagamento nem sincronização entre usuários.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+O protótipo permite explorar disputas, lances, cronômetro, histórico, saldo demonstrativo e temas claro/escuro.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Tratar o protótipo anexado como fonte da verdade visual e de comportamento. Manter sua hierarquia, proporções, cores, espaçamentos e composição; não inventar uma nova direção visual sem pedido explícito.
+- Preservar a tela centralizada com largura máxima de 480 px também em desktop, conforme o protótipo.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- O fluxo do protótipo está isolado em `public/prototype.html`; mudanças visuais e de interação da referência devem ser feitas nessa página.
 
 ## Pointers
 
