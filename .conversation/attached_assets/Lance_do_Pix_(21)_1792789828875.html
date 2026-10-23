@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lance do Pix</title>
+<style>
+:root{
+  --bg:#F1F5F4;--surface:#FFFFFF;--ink:#10241E;--muted:#55655F;--line:#DCE6E2;
+  --teal:#17B897;--teal-ink:#0B7A63;--teal-bg:#E1F6EF;--chip:#E6EDEB;--cta-off:#95DFCF;--cta-off-ink:#3C6F63;
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1A16;--surface:#15261F;--ink:#EAF4F1;--muted:#9DB3AB;--line:#24382F;
+    --teal:#2BD3AE;--teal-ink:#4FE3C2;--teal-bg:#133B31;--chip:#1D3229;--cta-off:#1F4A3E;--cta-off-ink:#7FB9AA;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1A16;--surface:#15261F;--ink:#EAF4F1;--muted:#9DB3AB;--line:#24382F;
+  --teal:#2BD3AE;--teal-ink:#4FE3C2;--teal-bg:#133B31;--chip:#1D3229;--cta-off:#1F4A3E;--cta-off-ink:#7FB9AA;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.app{max-width:480px;margin:0 auto;padding:0 20px 300px}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);margin:0 -20px;padding-left:20px;padding-right:20px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.right{display:flex;align-items:center;gap:8px}
+.bal{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px 4px 4px 14px;font-weight:700;font-size:14px}
+.plus{width:28px;height:28px;border-radius:50%;background:var(--teal);display:grid;place-items:center}
+.avatar{position:relative;width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700}
+.avatar i{position:absolute;top:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--teal);border:2px solid var(--bg)}
+.theme{width:40px;height:40px;border-radius:50%;background:var(--chip);display:grid;place-items:center}
+h1{font-size:24px;letter-spacing:-.02em;margin:26px 0 4px}
+.sub{margin:0;color:var(--muted);font-size:15px}
+.prize{display:flex;align-items:baseline;gap:8px;margin-top:14px}
+.prize small{font-size:22px;font-weight:800}
+.prize b{font-size:clamp(52px,17vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.bonus{color:var(--teal-ink);font-weight:800;font-size:19px;margin:10px 0 0}
+.timer{display:flex;align-items:center;gap:10px;margin-top:20px}
+.timer b{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:30px;color:var(--muted)}
+.timer span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.timer span i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.bar{height:5px;border-radius:9px;background:var(--line);margin-top:12px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:30px 0 10px}
+.sec h2{margin:0;font-size:13px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.sec span{font-size:13px;color:var(--muted)}
+.tl{padding-top:4px;isolation:isolate}
+.n{position:relative;display:flex;align-items:center;gap:16px;padding-bottom:24px}
+.n:not(:last-child)::before{content:"";position:absolute;left:11px;top:12px;bottom:0;width:2px;background:var(--line)}
+.n:last-child{padding-bottom:0}
+.d{position:relative;z-index:1;flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--bg)}
+.d.off::after{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--muted)}
+.d.on{background:var(--teal);color:#10241E}
+.n .b{flex:1}
+.n .b.r{display:flex;justify-content:space-between;align-items:center}
+.n .v{font-size:17px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.n .s{font-size:13px;color:var(--muted);margin-bottom:2px}
+.win .top{display:flex;justify-content:space-between;align-items:center}
+.tag{display:flex;align-items:center;gap:8px;color:var(--teal-ink);font-size:12px;font-weight:800;letter-spacing:.1em}
+.tag i{width:8px;height:8px;border-radius:50%;background:var(--teal)}
+.time{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.win .val{font-size:34px;font-weight:800;letter-spacing:-.03em;margin:10px 0 6px;line-height:1.05}
+.win .ok{display:flex;align-items:center;gap:6px;color:var(--teal-ink);font-weight:700;font-size:15px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .v{font-size:17px;font-weight:700;color:var(--muted)}
+.row .s{font-size:13px;color:var(--muted);margin-top:2px}
+.row .l{display:flex;gap:12px;align-items:center}
+.row .l i{width:8px;height:8px;border-radius:50%;background:var(--line);border:2px solid var(--muted);box-sizing:content-box;width:6px;height:6px}
+.sheet{position:fixed;z-index:10;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-radius:26px 26px 0 0;padding:22px 20px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+.sh{display:flex;justify-content:space-between;align-items:center}
+.sh h3{margin:0;font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.how{display:flex;align-items:center;gap:6px;color:var(--teal-ink);font-weight:700;font-size:13px}
+.step{display:flex;gap:10px;margin-top:16px}
+.step button.sq{width:52px;height:52px;border-radius:14px;background:var(--chip);font-size:22px;font-weight:700}
+.field{flex:1;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-radius:14px;background:var(--bg);border:1px solid var(--line);color:var(--muted);font-size:14px}
+.field output{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:700;color:var(--ink)}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.chips button{height:44px;border-radius:12px;background:var(--chip);font-weight:700;font-size:15px}
+.cta{width:100%;height:56px;border-radius:16px;margin-top:12px;background:var(--cta-off);color:var(--cta-off-ink);font-weight:800;font-size:17px;cursor:not-allowed}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.dbg{display:flex;gap:8px;overflow-x:auto;margin:14px -20px 0;padding:0 20px;scrollbar-width:none}
+.dbg button{flex:none;padding:8px 13px;border-radius:99px;background:var(--chip);font-size:13px;font-weight:700}
+.dbg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lances{margin:26px 0 0;padding-top:24px;border-top:1px solid var(--line);font-size:24px;letter-spacing:-.02em}
+.lc{margin-top:18px;padding:0 0 4px}
+.lc-cap{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.lc-price{margin-top:2px;font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.05;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lc-st{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:20px;margin-top:0;font-size:14px;font-weight:600}
+.lc-who{display:flex;gap:.3em;flex:1;min-width:0}
+.lc-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lc-tl{flex:none;white-space:nowrap;color:var(--muted);font-weight:500}
+.lc-t{flex:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;font-weight:700;line-height:1}
+.lc-t svg{display:block;width:22px;height:22px;color:var(--teal-ink)}
+.lc-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.lc-g{flex:1;min-width:0}
+.lc-r{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.lc-r .lc-t{font-size:20px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.lc-r .lc-t svg{width:22px;height:22px}
+.lc-x{font-size:14px;font-weight:600;color:var(--muted)}
+.lc-goal{flex:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:600;color:var(--muted)}
+.lc[data-ended] .lc-goal{display:none}
+.lc-x{white-space:nowrap}
+.lc[data-ended] .lc-r{flex-direction:row;align-items:center;gap:6px}
+.lc[data-ended] .lc-r .lc-t svg{width:18px;height:18px}
+.lc-goal{display:none}
+.lc[data-urgent] .lc-t{animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.lc[data-urgent] .lc-t{animation:none}}
+.lc-pg{position:relative;height:3px;margin-top:14px;border-radius:9px;background:var(--line);overflow:hidden}
+.lc-pg::after{content:"";position:absolute;inset:0;background:var(--teal);clip-path:inset(0 calc(100% - var(--p,100%)) 0 0)}
+.lc[data-ended] .lc-pg{display:none}
+.lc-nb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.lc[data-msg] .lc-nb{grid-template-rows:1fr}
+.lc-nx{overflow:hidden;min-height:0}
+.lc-msg{margin:0;padding-top:12px;font-size:15px;line-height:1.4;color:var(--muted)}
+.lc[data-good] .lc-msg{color:var(--teal-ink)}
+@media (prefers-reduced-motion:reduce){.lc-nb{transition:none}}
+.d svg{width:14px;height:14px}
+
+.cta:not(:disabled){background:var(--teal);color:#10241E;cursor:pointer}
+[hidden]{display:none!important}
+.dbg button:disabled{opacity:.4;cursor:not-allowed}
+.nxt{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.ring{position:relative;flex:none;width:44px;height:44px}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:3.5}
+.rb{stroke:var(--line)}
+.rf{stroke:var(--teal);stroke-linecap:round;stroke-dasharray:var(--rp,0) 100}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-variant-numeric:tabular-nums}
+.nx-a{font-size:16px;font-weight:700}
+.nx-b{font-size:13px;color:var(--muted);margin-top:2px}
+.nxt[data-urgent] .ring{animation:blink 1s step-end infinite}
+@keyframes fin{from{opacity:0}}
+.fade{animation:fin .5s ease}
+@media (prefers-reduced-motion:reduce){.nxt[data-urgent] .ring,.fade{animation:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l10.5 10.5L12 22.5 1.5 12z" fill="#17B897"/></svg>Lance do Pix</div>
+    <div class="right">
+      <div class="bal">R$ 390,00<button class="plus" aria-label="Adicionar saldo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10241E" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></button></div>
+      <div class="avatar">M<i></i></div>
+      <button class="theme" id="theme" aria-label="Alternar tema"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></button>
+    </div>
+  </header>
+  <div class="dbg" id="ctrl"></div>
+  <div class="nxt" id="nxt" hidden><div class="ring"><svg viewBox="0 0 40 40" aria-hidden="true"><circle class="rb" cx="20" cy="20" r="17" pathLength="100"/><circle class="rf" cx="20" cy="20" r="17" pathLength="100"/></svg><b id="nxs"></b></div><div><div class="nx-a">Próxima disputa</div><div class="nx-b">Prêmio revelado ao começar</div></div></div>
+
+  <h1 id="h1">Prêmio em disputa</h1>
+  <p class="sub">Dê um lance, fique no topo por 1 minuto e o prêmio é seu!</p>
+  <div class="prize"><small>R$</small><b id="pz"></b></div>
+  <p class="bonus" id="bn"></p>
+  <h2 class="lances">Lances</h2>
+  <section class="lc" id="card" aria-label="Lance no topo">
+    <div class="lc-row"><div class="lc-g"><div class="lc-st"><div class="lc-who"><span class="lc-nm" id="nm"></span><span class="lc-tl" id="tl"></span></div></div><div class="lc-price" id="price"></div></div><div class="lc-r"><span class="lc-x" id="tmx">Vitória em</span><div class="lc-t" id="tm"></div><div class="lc-goal" id="goal"></div></div></div>
+    <div class="lc-pg" aria-hidden="true"></div>
+    <div class="lc-nb"><div class="lc-nx" id="nx"><p class="lc-msg" id="ntm"></p></div></div>
+  </section>
+
+  <div class="sec" id="rec"><h2>RECENTES</h2></div>
+  <div class="tl" id="hist"></div>
+  <span class="sr" id="live" aria-live="polite"></span>
+</div>
+
+<div class="sheet">
+  <div class="sh"><h3>SEU PRÓXIMO LANCE</h3><button class="how"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17h.01"/></svg>Como funciona</button></div>
+  <div class="step">
+    <button class="sq" id="minus" aria-label="Diminuir lance">-</button>
+    <div class="field"><span>R$</span><output id="val">140,00</output></div>
+    <button class="sq" id="plusb" aria-label="Aumentar lance">+</button>
+  </div>
+  <div class="chips"><button data-add="50">+50</button><button data-add="100">+100</button><button data-add="200">+200</button></div>
+  <button class="cta" id="cta" type="button" disabled>Disputa encerrada</button>
+</div>
+
+<script>
+(() => {
+'use strict';
+const CFG = { duration: 60, urgentAt: 10, step: 10, histMax: 5, wait: 60, hold: 6 };
+const PRIZES = [{ value: 1000, bonus: 36 }, { value: 2500, bonus: 90 }, { value: 500, bonus: 18 }];
+const ME = 'Você', LONG = 'Maria Fernanda de Albuquerque';
+const $ = id => document.getElementById(id);
+const ICONS = {
+  default: '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  outbid: '<path d="M7 17L17 7M9 7h8v8"/>',
+  urgent: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  lead: '<circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/>',
+  ended: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  down: '<path d="M6 9l6 6 6-6"/>',
+  check: '<path d="M5 12.5l5 5 9-10"/>',
+};
+const icon = (k, w = 2) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format;
+const num = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pad = n => String(n).padStart(2, '0');
+const clock = s => s <= 60 ? `${s}s` : `${Math.floor(s / 60)}:${pad(s % 60)}`;
+const dur = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return s < 60 ? `${s}s` : `${Math.floor(s / 60)}min ${pad(s % 60)}s`; };
+const setText = (n, t) => { if (n.textContent !== t) n.textContent = t; };
+const setIcon = (n, k, w) => { const key = k + w; if (n.dataset.k !== key) { n.dataset.k = key; n.innerHTML = icon(k, w); } };
+const el = (tag, cls = '', kids = []) => { const n = document.createElement(tag); if (cls) n.className = cls; n.append(...kids); return n; };
+
+/* ---------- Momentos ---------- */
+const R = (...names) => names.map((name, i) => ({ name, price: 130 - (names.length - 1 - i) * 10 }));
+const OTHER = R('Ana Beatriz', 'Lucas', 'Maria', 'Pedro Henrique', 'Ana Beatriz', 'Lucas');
+const MINE = R('Ana Beatriz', 'Lucas', 'Pedro Henrique', 'Lucas', 'Maria', ME);
+const SCENES = {
+  other:  { label: 'Outro ganhando', bids: OTHER, secs: 60 },
+  outbid: { label: 'Você foi superado', bids: R('Lucas', 'Ana Beatriz', 'Pedro Henrique', 'Lucas', ME, 'Maria'), secs: 60 },
+  urgent: { label: 'Reta final', bids: OTHER, secs: 8 },
+  lead:   { label: 'Você ganhando', bids: MINE, secs: 60 },
+  ended:  { label: 'Encerrado', bids: OTHER, secs: 0 },
+  won:    { label: 'Você ganhou', bids: MINE, secs: 0 },
+  long:   { label: 'Nome longo', bids: R('Ana Beatriz', 'Lucas', 'Pedro Henrique', 'Lucas', 'Ana Beatriz', LONG), secs: 60 },
+  open:   { label: 'Disputa aberta', bids: [], secs: 60 },
+};
+
+/* ---------- Estado ---------- */
+let state = { bids: [], prize: PRIZES[0], endsAt: 0, frozen: null, nextAt: null, nfz: null };
+const nextLeft = s => s.nfz ?? Math.max(0, (s.nextAt - performance.now()) / 1000);
+const secsLeft = s => Math.max(0, Math.ceil(s.frozen ?? (s.endsAt - performance.now()) / 1000));
+const withTime = (s, secs) => s.frozen === null ? { endsAt: performance.now() + secs * 1000 } : { frozen: secs };
+const view = s => {
+  const secs = secsLeft(s), last = s.bids[s.bids.length - 1], prev = s.bids[s.bids.length - 2];
+  if (!last) return { empty: true, name: '', price: 0, me: false, next: CFG.step, secs: CFG.duration };
+  const me = last.name === ME;
+  return { name: last.name, price: last.price, me, next: last.price + CFG.step, outbid: !me && prev?.name === ME, secs, ended: secs === 0, urgent: secs > 0 && secs <= CFG.urgentAt };
+};
+const tailOf = v => v.ended ? 'ganhou' : 'está no topo';
+
+/* Aviso curto abaixo da barra: só aparece quando agrega. A ação de lance fica no painel de baixo. */
+const noticeFor = v => {
+  if (v.empty) return 'Assuma o topo com o primeiro lance.';
+  if (v.ended) return v.me ? 'Parabéns, o prêmio é seu.' : '';
+  if (v.me) return v.urgent ? 'Falta pouco! Continue no topo e o prêmio é seu.' : 'Continue no topo e o prêmio é seu.';
+  if (v.urgent) return 'Últimos segundos! Supere agora.';
+  if (v.outbid) return 'Você foi superado. Supere o lance para voltar ao topo.';
+  return '';
+};
+
+/* ---------- Elementos ---------- */
+const E = {};
+['price', 'nm', 'tl', 'tmx', 'goal', 'tm', 'card', 'nx', 'ntm', 'hist', 'live', 'ctrl', 'cta', 'val', 'pz', 'bn', 'rec', 'nxt', 'nxs'].forEach(id => { E[id] = $(id); });
+
+const showNotice = (msg, good) => {
+  if (msg) setText(E.ntm, msg);
+  E.card.toggleAttribute('data-msg', !!msg);
+  E.card.toggleAttribute('data-good', good);
+  E.nx.inert = !msg;
+};
+
+let histKey = '', timeEls = [];
+const showHist = (bids, ended) => {
+  const full = bids.slice(-(CFG.histMax + 1)).reverse(), recent = full.slice(1);
+  E.rec.hidden = E.hist.hidden = !recent.length;
+  const k = recent.map(b => b.name + b.price + b.at).join('|');
+  if (k !== histKey) {
+    histKey = k; timeEls = [];
+    E.hist.replaceChildren(...recent.map((b, i) => {
+      const dot = el('span', 'd off');
+      const t = el('span', 'time');
+      timeEls.push([t, b.at, full[i].at]);
+      return el('div', 'n', [dot, el('div', 'b r', [el('div', '', [el('div', 's', [b.name]), el('div', 'v', [brl(b.price)])]), t])]);
+    }));
+  }
+  const now = performance.now();
+  timeEls.forEach(([t, at, nextAt]) => setText(t, `Superado aos ${clock(Math.max(0, Math.ceil(CFG.duration - (nextAt - at) / 1000)))}`));
+};
+
+/* Painel de baixo: único lugar com ação de lance */
+let bid = 0, seen = -1;
+const sheet = v => {
+  if (v.price !== seen) { seen = v.price; bid = v.next; }
+  if (bid < v.next) bid = v.next;
+  setText(E.val, num(bid));
+  E.cta.disabled = v.ended || v.me;
+  setText(E.cta, v.ended ? (state.nextAt !== null ? `Próxima disputa em ${clock(Math.ceil(nextLeft(state)))}` : 'Disputa encerrada') : v.me ? 'Seu lance está no topo' : v.empty ? `Dar o primeiro lance de ${brl(bid)}` : `Superar com ${brl(bid)}`);
+};
+const bump = d => { const v = view(state); if (v.up) return; bid = Math.max(v.next, bid + d); sheet(v); };
+$('minus').onclick = () => bump(-CFG.step);
+$('plusb').onclick = () => bump(CFG.step);
+document.querySelectorAll('[data-add]').forEach(b => { b.onclick = () => bump(Number(b.dataset.add)); });
+$('theme').onclick = () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark';
+};
+
+/* ---------- Render ---------- */
+let lastSecs = -1, lastLive = '', lastNext = -1;
+const render = () => {
+  const v = view(state), n = noticeFor(v), p = state.prize;
+  lastSecs = v.secs;
+  setText(E.pz, num(p.value));
+  setText(E.bn, `+ ${brl(p.bonus)} de bônus`);
+  E.card.toggleAttribute('data-urgent', !!v.urgent);
+  E.card.toggleAttribute('data-ended', !!v.ended);
+  setText(E.price, brl(v.price));
+  setText(E.nm, v.empty ? 'Nenhum lance ainda' : v.name);
+  setText(E.tl, v.empty ? '' : tailOf(v));
+  const nb = state.nextAt !== null, nl = nb ? Math.ceil(nextLeft(state)) : 0;
+  E.nxt.hidden = !nb; E.nxt.toggleAttribute('data-urgent', nb && nl <= CFG.urgentAt); setText(E.nxs, String(nl)); lastNext = nb ? nl : -1;
+  setText(E.tmx, v.ended ? 'Disputa encerrada' : 'Vitória em');
+  setText(E.goal, clock(CFG.duration));
+  if (v.ended) setIcon(E.tm, 'check', 3); else { delete E.tm.dataset.k; setText(E.tm, clock(v.secs)); }
+  showNotice(n, !!v.me);
+  showHist(state.bids, v.ended);
+  sheet(v);
+  const text = v.empty ? 'Disputa aberta. Nenhum lance ainda.' : `${v.name} ${tailOf(v)} com ${brl(v.price)}. ${n}`.trim();
+  if (text !== lastLive) { lastLive = text; E.live.textContent = text; }
+  const fz = state.nextAt !== null ? state.nfz : state.frozen;
+  pause.disabled = !state.bids.length;
+  pause.textContent = fz !== null ? 'Retomar' : 'Pausar';
+  pause.setAttribute('aria-pressed', fz !== null);
+};
+
+const place = () => {
+  const v = view(state);
+  if (v.up || v.ended || v.me) return;
+  state = { ...state, bids: [...state.bids, { name: ME, price: bid, at: performance.now() }], ...withTime(state, CFG.duration) };
+  render();
+};
+E.cta.onclick = place;
+const fade = () => { const a = document.querySelector('.app'); a.classList.remove('fade'); void a.offsetWidth; a.classList.add('fade'); };
+const startNext = () => {
+  state = { ...state, bids: [], prize: PRIZES[(PRIZES.indexOf(state.prize) + 1) % PRIZES.length], frozen: null, nextAt: null, nfz: null };
+  seen = -1; fade(); render();
+};
+const apply = k => {
+  const sc = SCENES[k], now = performance.now(), last = (CFG.duration - sc.secs) * 1000;
+  seen = -1;
+  state = { ...state, prize: PRIZES[0], bids: sc.bids.map((b, i, a) => ({ ...b, at: now - last - (a.length - 1 - i) * 11000 })), nextAt: sc.secs === 0 ? now + CFG.wait * 1000 : null, nfz: null, ...withTime(state, sc.secs) };
+  render();
+};
+
+/* ---------- Momentos de teste ---------- */
+Object.entries(SCENES).forEach(([k, sc]) => { const b = el('button', '', [sc.label]); b.type = 'button'; b.dataset.s = k; E.ctrl.append(b); });
+const pause = el('button', '', ['Pausar']);
+pause.type = 'button'; pause.dataset.s = 'pause'; pause.setAttribute('aria-pressed', 'false');
+E.ctrl.append(pause);
+E.ctrl.addEventListener('click', e => {
+  const k = e.target.closest('[data-s]')?.dataset.s;
+  if (!k) return;
+  if (k === 'pause') {
+    state = state.nextAt !== null
+      ? (state.nfz === null ? { ...state, nfz: nextLeft(state) } : { ...state, nfz: null, nextAt: performance.now() + state.nfz * 1000 })
+      : state.frozen === null
+      ? { ...state, frozen: Math.max(0, (state.endsAt - performance.now()) / 1000) }
+      : { ...state, frozen: null, endsAt: performance.now() + state.frozen * 1000 };
+    render();
+  } else apply(k);
+});
+
+apply('other');
+setInterval(() => {
+  if (state.nextAt !== null) {
+    if (state.nfz === null && nextLeft(state) <= 0) return startNext();
+    if (Math.ceil(nextLeft(state)) !== lastNext) render();
+    return;
+  }
+  const s = secsLeft(state);
+  if (!state.bids.length || s === lastSecs) return;
+  if (s === 0 && lastSecs > 0 && state.frozen === null) state = { ...state, nextAt: performance.now() + CFG.wait * 1000, nfz: null };
+  render();
+}, 250);
+const root = document.documentElement;
+const frame = () => {
+  const left = !state.bids.length ? CFG.duration : state.frozen ?? Math.max(0, (state.endsAt - performance.now()) / 1000);
+  root.style.setProperty('--rp', state.nextAt !== null ? (1 - nextLeft(state) / CFG.wait) * 100 : 0);
+  root.style.setProperty('--p', `${(1 - left / CFG.duration) * 100}%`);
+  requestAnimationFrame(frame);
+};
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
