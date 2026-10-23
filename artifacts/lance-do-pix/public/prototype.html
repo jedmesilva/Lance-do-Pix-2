@@ -77,9 +77,10 @@ h1{font-size:24px;letter-spacing:-.02em;margin:26px 0 4px}
 .sh{display:flex;justify-content:space-between;align-items:center}
 .sh h3{margin:0;font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:700}
 .how{display:flex;align-items:center;gap:6px;color:var(--teal-ink);font-weight:700;font-size:13px}
-.how-dialog{width:min(calc(100% - 32px),460px);max-width:none;max-height:calc(100dvh - 32px);margin:auto;padding:24px;overflow:auto;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 80px rgba(0,0,0,.24)}
-.how-dialog::backdrop{background:rgba(16,36,30,.46);backdrop-filter:blur(3px)}
+.how-dialog{width:min(calc(100% - 32px),460px);max-width:none;max-height:calc(100dvh - 32px);margin:auto;padding:24px;overflow:auto;overscroll-behavior:contain;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 80px rgba(0,0,0,.24)}
+.how-dialog::backdrop{background:rgba(16,36,30,.46);backdrop-filter:blur(3px);touch-action:none}
 .how-dialog[open]{animation:how-in .2s ease-out}
+html.how-open,body.how-open{overflow:hidden;overscroll-behavior:none}
 .how-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .how-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--teal-bg);color:var(--teal-ink)}
 .how-close{width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--chip);color:var(--ink)}
@@ -335,11 +336,28 @@ $('theme').onclick = () => {
   r.dataset.theme = dark ? 'light' : 'dark';
 };
 const howDialog = $('howDialog');
-document.querySelectorAll('.how').forEach(b => { b.onclick = () => howDialog.showModal(); });
+let modalScrollY = 0;
+const openHow = () => {
+  if (howDialog.open) return;
+  modalScrollY = window.scrollY;
+  document.documentElement.classList.add('how-open');
+  document.body.classList.add('how-open');
+  howDialog.showModal();
+};
+document.querySelectorAll('.how').forEach(b => { b.onclick = openHow; });
 $('closeHow').onclick = () => howDialog.close();
+howDialog.addEventListener('close', () => {
+  document.documentElement.classList.remove('how-open');
+  document.body.classList.remove('how-open');
+  window.scrollTo(0, modalScrollY);
+});
 howDialog.addEventListener('click', e => {
   const r = howDialog.getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) howDialog.close();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) {
+    e.preventDefault();
+    e.stopPropagation();
+    howDialog.close();
+  }
 });
 
 /* ---------- Render ---------- */
